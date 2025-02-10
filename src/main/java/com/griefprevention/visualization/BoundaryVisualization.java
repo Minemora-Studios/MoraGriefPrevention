@@ -7,6 +7,7 @@ import me.ryanhamshire.GriefPrevention.PlayerData;
 import com.griefprevention.events.BoundaryVisualizationEvent;
 import com.griefprevention.util.IntVector;
 import me.ryanhamshire.GriefPrevention.util.BoundingBox;
+import net.minemora.griefprevention.MoraGp;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -74,10 +75,15 @@ public abstract class BoundaryVisualization
         // Apply all visualization elements.
         elements.forEach(element -> draw(player, element));
 
-        // Schedule automatic reversion.
+        // MoraGriefPrevention - disable scheduled revert if player is in claim editing mode
+        if(MoraGp.getInstance().getPlayer(player).isClaimEditingMode()) {
+            return;
+        }
+        // MoraGriefPrevention - end
 
-        // MoraGriefPrevention - disable scheduled revert
-        //scheduleRevert(player, playerData);
+        // Schedule automatic reversion.
+        scheduleRevert(player, playerData);
+
     }
 
     /**
