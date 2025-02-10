@@ -11,11 +11,13 @@ import me.ryanhamshire.GriefPrevention.Messages;
 import me.ryanhamshire.GriefPrevention.PlayerData;
 import me.ryanhamshire.GriefPrevention.ShovelMode;
 import me.ryanhamshire.GriefPrevention.TextMode;
+import me.ryanhamshire.GriefPrevention.events.ClaimInspectionEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Set;
 import java.util.UUID;
 
 public class MoraGpPlayer {
@@ -33,11 +35,14 @@ public class MoraGpPlayer {
 
     public void startClaimEditingMode()
     {
-        if(claimEditingMode) return;
-        claimEditingMode = true;
         if(stopEditingTask != null) {
             stopEditingTask.cancel();
+            stopEditingTask = null;
         }
+
+        if(claimEditingMode) return;
+
+        claimEditingMode = true;
 
         Player player = Bukkit.getPlayer(uuid);
 
@@ -48,6 +53,7 @@ public class MoraGpPlayer {
         //reset any work he might have been doing
         playerData.lastShovelLocation = null;
         playerData.claimResizing = null;
+        getData().setVisibleBoundaries(null);
 
         //always reset to basic claims mode
         if (playerData.shovelMode != ShovelMode.Basic)
@@ -70,13 +76,17 @@ public class MoraGpPlayer {
             GriefPrevention.sendMessage(player, TextMode.Instr, Messages.SurvivalBasicsVideo2, DataStore.SURVIVAL_VIDEO_URL);
         }
 
-        //if standing in a claim owned by the player, visualize it
-        Claim claim = GriefPrevention.instance.dataStore.getClaimAt(player.getLocation(), true, playerData.lastClaim);
-        if (claim != null && claim.checkPermission(player, ClaimPermission.Edit, null) == null)
-        {
-            playerData.lastClaim = claim;
-            BoundaryVisualization.visualizeClaim(player, claim, VisualizationType.CLAIM);
-        }
+        //visualize nearby claims
+        Set<Claim> claims = GriefPrevention.instance.dataStore.getNearbyClaims(player.getLocation());
+
+        // alert plugins of a claim inspection, return if cancelled
+        ClaimInspectionEvent inspectionEvent = new ClaimInspectionEvent(player, null, claims, true);
+        Bukkit.getPluginManager().callEvent(inspectionEvent);
+        if (inspectionEvent.isCancelled()) return;
+
+        //visualize boundaries
+        BoundaryVisualization.visualizeNearbyClaims(player, inspectionEvent.getClaims(), player.getEyeLocation().getBlockY());
+        GriefPrevention.sendMessage(player, TextMode.Info, Messages.ShowNearbyClaims, String.valueOf(claims.size()));
     }
 
     private void stopClaimEditingMode() {
@@ -97,7 +107,7 @@ public class MoraGpPlayer {
             {
                 stopClaimEditingMode();
             }
-        }.runTaskLater(MoraGp.getInstance().getPlugin(), 10*20);
+        }.runTaskLater(MoraGp.getInstance().getPlugin(), 8*20);
     }
 
     public PlayerData getData() {

@@ -1459,7 +1459,7 @@ public abstract class DataStore
     }
 
     //gets all the claims "near" a location
-    Set<Claim> getNearbyClaims(Location location)
+    public Set<Claim> getNearbyClaims(Location location)
     {
         return getChunkClaims(
                 location.getWorld(),
