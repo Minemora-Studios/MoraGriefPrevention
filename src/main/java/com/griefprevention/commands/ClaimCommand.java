@@ -94,12 +94,17 @@ public class ClaimCommand extends CommandHandler
         //if player has any claims, respect claim minimum size setting
         else
         {
+
+            // MoraGriefPrevention - why
+
             //if player has exactly one land claim, this requires the claim modification tool to be in hand (or creative mode player)
-            if (needsShovel(playerData, player))
+            /*if (needsShovel(playerData, player))
             {
                 GriefPrevention.sendMessage(player, TextMode.Err, Messages.MustHoldModificationToolForThat);
                 return true;
-            }
+            }*/
+
+            // MoraGriefPrevention - end
 
             radius = getClaimMinRadius();
         }
