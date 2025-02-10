@@ -1,4 +1,4 @@
-package me.ryanhamshire.GriefPrevention.events;
+package net.minemora.griefprevention.events;
 
 import me.ryanhamshire.GriefPrevention.Claim;
 import org.bukkit.block.Block;

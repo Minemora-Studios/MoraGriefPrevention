@@ -1,28 +1,20 @@
-package me.ryanhamshire.GriefPrevention.events;
+package net.minemora.griefprevention.events;
 
-import me.ryanhamshire.GriefPrevention.Claim;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class StartClaimResizeEvent extends PlayerEvent
+public class StartClaimCreationEvent extends PlayerEvent
 {
 
-    private final @NotNull Claim claim;
     private final @NotNull Block clickedBlock;
 
-    public StartClaimResizeEvent(@NotNull Player who, @NotNull Claim claim, @NotNull Block clickedBlock)
+    public StartClaimCreationEvent(@NotNull Player who, @NotNull Block clickedBlock)
     {
         super(who);
-        this.claim = claim;
         this.clickedBlock = clickedBlock;
-    }
-
-    public final @NotNull Claim getClaim()
-    {
-        return this.claim;
     }
 
     public final @NotNull Block getClickedBlock()

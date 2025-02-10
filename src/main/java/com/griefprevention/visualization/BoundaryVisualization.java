@@ -75,7 +75,9 @@ public abstract class BoundaryVisualization
         elements.forEach(element -> draw(player, element));
 
         // Schedule automatic reversion.
-        scheduleRevert(player, playerData);
+
+        // MoraGriefPrevention - disable scheduled revert
+        //scheduleRevert(player, playerData);
     }
 
     /**

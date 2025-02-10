@@ -24,9 +24,10 @@ import com.griefprevention.util.command.MonitoredCommands;
 import com.griefprevention.visualization.BoundaryVisualization;
 import com.griefprevention.visualization.VisualizationType;
 import me.ryanhamshire.GriefPrevention.events.ClaimInspectionEvent;
-import me.ryanhamshire.GriefPrevention.events.StartClaimCreationEvent;
-import me.ryanhamshire.GriefPrevention.events.StartClaimResizeEvent;
-import me.ryanhamshire.GriefPrevention.events.StartSubdivideClaimCreationEvent;
+import net.minemora.griefprevention.MoraGp;
+import net.minemora.griefprevention.events.StartClaimCreationEvent;
+import net.minemora.griefprevention.events.StartClaimResizeEvent;
+import net.minemora.griefprevention.events.StartSubdivideClaimCreationEvent;
 import me.ryanhamshire.GriefPrevention.util.BoundingBox;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -1323,10 +1324,26 @@ class PlayerEventHandler implements Listener
             //give the player his available claim blocks count and claiming instructions, but only if he keeps the shovel equipped for a minimum time, to avoid mouse wheel spam
             if (instance.claimsEnabledForWorld(player.getWorld()))
             {
-                EquipShovelProcessingTask task = new EquipShovelProcessingTask(player);
-                instance.getServer().getScheduler().scheduleSyncDelayedTask(instance, task, 15L);  //15L is approx. 3/4 of a second
+                // MoraGriefPrevention - disable ugly task, use our own method
+                MoraGp.getInstance().playerHoldsShovel(player);
+
+                //EquipShovelProcessingTask task = new EquipShovelProcessingTask(player);
+                //instance.getServer().getScheduler().scheduleSyncDelayedTask(instance, task, 15L);  //15L is approx. 3/4 of a second
+                // MoraGriefPrevention - end
             }
         }
+        // MoraGriefPrevention - call when player releases the shovel
+        else {
+            int previousSlot = event.getPreviousSlot();
+            ItemStack previousItemStack = player.getInventory().getItem(previousSlot);
+            if (previousItemStack != null && previousItemStack.getType() == instance.config_claims_modificationTool) {
+                if (instance.claimsEnabledForWorld(player.getWorld()))
+                {
+                    MoraGp.getInstance().playerReleaseShovel(player);
+                }
+            }
+        }
+        // MoraGriefPrevention - end
     }
 
     //block use of buckets within other players' claims
@@ -1972,7 +1989,7 @@ class PlayerEventHandler implements Listener
                         playerData.claimResizing = claim;
                         playerData.lastShovelLocation = clickedBlock.getLocation();
                         GriefPrevention.sendMessage(player, TextMode.Instr, Messages.ResizeStart);
-
+                        // MoraGriefPrevention - call our event
                         Bukkit.getPluginManager().callEvent(new StartClaimResizeEvent(player, claim, clickedBlock));
                     }
 
@@ -1995,6 +2012,7 @@ class PlayerEventHandler implements Listener
                                 playerData.lastShovelLocation = clickedBlock.getLocation();
                                 playerData.claimSubdividing = claim;
 
+                                // MoraGriefPrevention - call our event
                                 Bukkit.getPluginManager().callEvent(new StartSubdivideClaimCreationEvent(player, clickedBlock, claim));
                             }
                         }
@@ -2095,6 +2113,7 @@ class PlayerEventHandler implements Listener
                 //show him where he's working
                 BoundaryVisualization.visualizeArea(player, new BoundingBox(clickedBlock), VisualizationType.INITIALIZE_ZONE);
 
+                // MoraGriefPrevention - call our event
                 Bukkit.getPluginManager().callEvent(new StartClaimCreationEvent(player, clickedBlock));
             }
 

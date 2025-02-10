@@ -26,6 +26,7 @@ import com.griefprevention.protection.ProtectionHelper;
 import me.ryanhamshire.GriefPrevention.DataStore.NoTransferException;
 import me.ryanhamshire.GriefPrevention.events.SaveTrappedPlayerEvent;
 import me.ryanhamshire.GriefPrevention.events.TrustChangedEvent;
+import net.minemora.griefprevention.MoraGp;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
@@ -385,6 +386,9 @@ public class GriefPrevention extends JavaPlugin
         }
 
         setUpCommands();
+
+        // MoraGriefPrevention - initialize
+        new MoraGp(this);
 
         AddLogEntry("Boot finished.");
 
