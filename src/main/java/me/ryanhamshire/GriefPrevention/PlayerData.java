@@ -83,6 +83,8 @@ public class PlayerData
     @Deprecated(forRemoval = true, since = "16.18")
     public Visualization currentVisualization = null;
 
+    // MoraGriefPrevention - This modification was added to track changes in claim blocks
+    public boolean update = false;
     //anti-camping pvp protection
     public boolean pvpImmune = false;
     public long lastSpawn = 0;
@@ -211,11 +213,14 @@ public class PlayerData
 
     public void setAccruedClaimBlocks(Integer accruedClaimBlocks) {
         // MoraGriefPrevention start - This modification was added to track changes in claim blocks
-        OfflinePlayer offlinePlayer = GriefPrevention.instance.getServer().getOfflinePlayer(this.playerID);
-        if (offlinePlayer.isOnline()) {
-            Player player = offlinePlayer.getPlayer();
-            // MoraGriefPrevention - call our event
-            Bukkit.getPluginManager().callEvent(new ClaimBlocksUpdateEvent(player, this.accruedClaimBlocks, accruedClaimBlocks));
+        if (update) {
+            int remainingClaimBlocks = getRemainingClaimBlocks();
+            OfflinePlayer offlinePlayer = GriefPrevention.instance.getServer().getOfflinePlayer(this.playerID);
+            if (offlinePlayer.isOnline()) {
+                Player player = offlinePlayer.getPlayer();
+                // MoraGriefPrevention - call our event
+                Bukkit.getScheduler().runTask(GriefPrevention.instance, () -> Bukkit.getPluginManager().callEvent(new ClaimBlocksUpdateEvent(player, remainingClaimBlocks, getRemainingClaimBlocks())));
+            }
         }
         // MoraGriefPrevention end
         this.accruedClaimBlocks = accruedClaimBlocks;
@@ -228,8 +233,18 @@ public class PlayerData
         return bonusClaimBlocks;
     }
 
-    public void setBonusClaimBlocks(Integer bonusClaimBlocks)
-    {
+    public void setBonusClaimBlocks(Integer bonusClaimBlocks) {
+        // MoraGriefPrevention start - This modification was added to track changes in claim blocks
+        if (update) {
+            int remainingClaimBlocks = getRemainingClaimBlocks();
+            OfflinePlayer offlinePlayer = GriefPrevention.instance.getServer().getOfflinePlayer(this.playerID);
+            if (offlinePlayer.isOnline()) {
+                Player player = offlinePlayer.getPlayer();
+                // MoraGriefPrevention - call our event
+                Bukkit.getScheduler().runTask(GriefPrevention.instance, () -> Bukkit.getPluginManager().callEvent(new ClaimBlocksUpdateEvent(player, remainingClaimBlocks, getRemainingClaimBlocks())));
+            }
+        }
+        // MoraGriefPrevention end
         this.bonusClaimBlocks = bonusClaimBlocks;
     }
 
@@ -268,6 +283,8 @@ public class PlayerData
                 this.bonusClaimBlocks = 0;
             }
         }
+
+        update = true;
     }
 
     public Vector<Claim> getClaims()
