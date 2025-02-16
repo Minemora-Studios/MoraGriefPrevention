@@ -19,9 +19,12 @@
 package me.ryanhamshire.GriefPrevention;
 
 import com.griefprevention.visualization.BoundaryVisualization;
+import net.minemora.griefprevention.events.ClaimBlocksUpdateEvent;
+import net.minemora.griefprevention.events.StartClaimCreationEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
@@ -206,8 +209,15 @@ public class PlayerData
         return accruedClaimBlocks;
     }
 
-    public void setAccruedClaimBlocks(Integer accruedClaimBlocks)
-    {
+    public void setAccruedClaimBlocks(Integer accruedClaimBlocks) {
+        // MoraGriefPrevention start - This modification was added to track changes in claim blocks
+        OfflinePlayer offlinePlayer = GriefPrevention.instance.getServer().getOfflinePlayer(this.playerID);
+        if (offlinePlayer.isOnline()) {
+            Player player = offlinePlayer.getPlayer();
+            // MoraGriefPrevention - call our event
+            Bukkit.getPluginManager().callEvent(new ClaimBlocksUpdateEvent(player, this.accruedClaimBlocks, accruedClaimBlocks));
+        }
+        // MoraGriefPrevention end
         this.accruedClaimBlocks = accruedClaimBlocks;
         this.newlyAccruedClaimBlocks = 0;
     }
