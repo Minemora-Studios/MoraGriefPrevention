@@ -590,6 +590,8 @@ public class EntityEventHandler implements Listener
         }
     }
 
+    // MoraGriefPrevention - This modification was made because our Survival (Minemora) does not use the creative mode option
+    /*
     //when a creature spawns...
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEntitySpawn(CreatureSpawnEvent event)
@@ -612,7 +614,8 @@ public class EntityEventHandler implements Listener
             event.setCancelled(true);
             return;
         }
-    }
+    } */
+    // MoraGriefPrevention end
 
     //when an entity dies...
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
