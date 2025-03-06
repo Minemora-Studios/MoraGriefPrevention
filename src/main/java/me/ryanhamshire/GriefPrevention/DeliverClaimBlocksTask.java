@@ -75,6 +75,10 @@ class DeliverClaimBlocksTask implements Runnable
         //remember current location for next time
         playerData.lastAfkCheckLocation = player.getLocation();
 
+        // MoraGriefPrevention start - This modification was added to track changes in claim blocks
+        int remainingClaimBlocks = playerData.getRemainingClaimBlocks();
+        // MoraGriefPrevention start - This modification was added to track changes in claim blocks
+
         try
         {
             //determine how fast blocks accrue for this player; can be modified by addons
@@ -96,21 +100,9 @@ class DeliverClaimBlocksTask implements Runnable
             //set actual accrual
             accrualRate = event.getBlocksToAccrue();
             if (accrualRate < 0) accrualRate = 0;
-            // MoraGriefPrevention start - This modification was added to track changes in claim blocks
-            int remainingClaimBlocks = playerData.getRemainingClaimBlocks();
-            // MoraGriefPrevention start - This modification was added to track changes in claim blocks
             playerData.accrueBlocks(accrualRate);
             GriefPrevention.AddLogEntry("Delivering " + event.getBlocksToAccrue() + " blocks to " + player.getName(), CustomLogEntryTypes.Debug, true);
 
-            // MoraGriefPrevention start - This modification was added to track changes in claim blocks
-            OfflinePlayer offlinePlayer = GriefPrevention.instance.getServer().getOfflinePlayer(playerData.playerID);
-            if (offlinePlayer.isOnline()) {
-                Player player = offlinePlayer.getPlayer();
-                // MoraGriefPrevention - call our event
-                Bukkit.getScheduler().runTask(GriefPrevention.instance, () -> Bukkit.getPluginManager().callEvent(new ClaimBlocksUpdateEvent(player, remainingClaimBlocks, playerData.getRemainingClaimBlocks())));
-            }
-            // MoraGriefPrevention start - This modification was added to track changes in claim blocks
-            
             //intentionally NOT saving data here to reduce overall secondary storage access frequency
             //many other operations will cause this player's data to save, including his eventual logout
             //dataStore.savePlayerData(player.getUniqueIdentifier(), playerData);
@@ -120,5 +112,14 @@ class DeliverClaimBlocksTask implements Runnable
             GriefPrevention.AddLogEntry("Problem delivering claim blocks to player " + player.getName() + ":");
             e.printStackTrace();
         }
+
+        // MoraGriefPrevention start - This modification was added to track changes in claim blocks
+        OfflinePlayer offlinePlayer = GriefPrevention.instance.getServer().getOfflinePlayer(playerData.playerID);
+        if (offlinePlayer.isOnline()) {
+            Player player = offlinePlayer.getPlayer();
+            // MoraGriefPrevention - call our event
+            Bukkit.getScheduler().runTask(GriefPrevention.instance, () -> Bukkit.getPluginManager().callEvent(new ClaimBlocksUpdateEvent(player, remainingClaimBlocks, playerData.getRemainingClaimBlocks())));
+        }
+        // MoraGriefPrevention start - This modification was added to track changes in claim blocks
     }
 }
