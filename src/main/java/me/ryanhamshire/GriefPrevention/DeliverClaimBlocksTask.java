@@ -80,7 +80,9 @@ class DeliverClaimBlocksTask implements Runnable
             int accrualRate = instance.config_claims_blocksAccruedPerHour_default;
 
             //fire event for addons
-            AccrueClaimBlocksEvent event = new AccrueClaimBlocksEvent(player, accrualRate, isIdle);
+            // MoraGriefPrevention start - isIdle -> false - always give claim blocks
+            AccrueClaimBlocksEvent event = new AccrueClaimBlocksEvent(player, accrualRate, false);
+            // MoraGriefPrevention start - isIdle -> false - always give claim blocks
             instance.getServer().getPluginManager().callEvent(event);
             if (event.isCancelled())
             {
