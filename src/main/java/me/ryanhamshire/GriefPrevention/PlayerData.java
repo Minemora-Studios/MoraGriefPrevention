@@ -19,8 +19,6 @@
 package me.ryanhamshire.GriefPrevention;
 
 import com.griefprevention.visualization.BoundaryVisualization;
-import net.minemora.griefprevention.events.ClaimBlocksUpdateEvent;
-import net.minemora.griefprevention.events.StartClaimCreationEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -212,17 +210,6 @@ public class PlayerData
     }
 
     public void setAccruedClaimBlocks(Integer accruedClaimBlocks) {
-        // MoraGriefPrevention start - This modification was added to track changes in claim blocks
-        if (update) {
-            int remainingClaimBlocks = getRemainingClaimBlocks();
-            OfflinePlayer offlinePlayer = GriefPrevention.instance.getServer().getOfflinePlayer(this.playerID);
-            if (offlinePlayer.isOnline()) {
-                Player player = offlinePlayer.getPlayer();
-                // MoraGriefPrevention - call our event
-                Bukkit.getScheduler().runTask(GriefPrevention.instance, () -> Bukkit.getPluginManager().callEvent(new ClaimBlocksUpdateEvent(player, remainingClaimBlocks, getRemainingClaimBlocks())));
-            }
-        }
-        // MoraGriefPrevention end
         this.accruedClaimBlocks = accruedClaimBlocks;
         this.newlyAccruedClaimBlocks = 0;
     }
@@ -234,17 +221,6 @@ public class PlayerData
     }
 
     public void setBonusClaimBlocks(Integer bonusClaimBlocks) {
-        // MoraGriefPrevention start - This modification was added to track changes in claim blocks
-        if (update) {
-            int remainingClaimBlocks = getRemainingClaimBlocks();
-            OfflinePlayer offlinePlayer = GriefPrevention.instance.getServer().getOfflinePlayer(this.playerID);
-            if (offlinePlayer.isOnline()) {
-                Player player = offlinePlayer.getPlayer();
-                // MoraGriefPrevention - call our event
-                Bukkit.getScheduler().runTask(GriefPrevention.instance, () -> Bukkit.getPluginManager().callEvent(new ClaimBlocksUpdateEvent(player, remainingClaimBlocks, getRemainingClaimBlocks())));
-            }
-        }
-        // MoraGriefPrevention end
         this.bonusClaimBlocks = bonusClaimBlocks;
     }
 

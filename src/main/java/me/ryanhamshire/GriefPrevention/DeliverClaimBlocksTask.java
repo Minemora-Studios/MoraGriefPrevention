@@ -19,7 +19,6 @@
 package me.ryanhamshire.GriefPrevention;
 
 import me.ryanhamshire.GriefPrevention.events.AccrueClaimBlocksEvent;
-import net.minemora.griefprevention.events.ClaimBlocksUpdateEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -75,10 +74,6 @@ class DeliverClaimBlocksTask implements Runnable
         //remember current location for next time
         playerData.lastAfkCheckLocation = player.getLocation();
 
-        // MoraGriefPrevention start - This modification was added to track changes in claim blocks
-        int remainingClaimBlocks = playerData.getRemainingClaimBlocks();
-        // MoraGriefPrevention start - This modification was added to track changes in claim blocks
-
         try
         {
             //determine how fast blocks accrue for this player; can be modified by addons
@@ -112,14 +107,5 @@ class DeliverClaimBlocksTask implements Runnable
             GriefPrevention.AddLogEntry("Problem delivering claim blocks to player " + player.getName() + ":");
             e.printStackTrace();
         }
-
-        // MoraGriefPrevention start - This modification was added to track changes in claim blocks
-        OfflinePlayer offlinePlayer = GriefPrevention.instance.getServer().getOfflinePlayer(playerData.playerID);
-        if (offlinePlayer.isOnline()) {
-            Player player = offlinePlayer.getPlayer();
-            // MoraGriefPrevention - call our event
-            Bukkit.getScheduler().runTask(GriefPrevention.instance, () -> Bukkit.getPluginManager().callEvent(new ClaimBlocksUpdateEvent(player, remainingClaimBlocks, playerData.getRemainingClaimBlocks())));
-        }
-        // MoraGriefPrevention start - This modification was added to track changes in claim blocks
     }
 }
