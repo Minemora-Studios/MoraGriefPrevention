@@ -1986,11 +1986,15 @@ class PlayerEventHandler implements Listener
                     //if he clicked on a corner, start resizing it
                     if ((clickedBlock.getX() == claim.getLesserBoundaryCorner().getBlockX() || clickedBlock.getX() == claim.getGreaterBoundaryCorner().getBlockX()) && (clickedBlock.getZ() == claim.getLesserBoundaryCorner().getBlockZ() || clickedBlock.getZ() == claim.getGreaterBoundaryCorner().getBlockZ()))
                     {
+                        // MoraGriefPrevention - call our event
+                        StartClaimResizeEvent startClaimResizeEvent = new StartClaimResizeEvent(player, claim, clickedBlock);
+                        Bukkit.getPluginManager().callEvent(startClaimResizeEvent);
+                        if(startClaimResizeEvent.isCancelled()) return;
+
                         playerData.claimResizing = claim;
                         playerData.lastShovelLocation = clickedBlock.getLocation();
                         GriefPrevention.sendMessage(player, TextMode.Instr, Messages.ResizeStart);
-                        // MoraGriefPrevention - call our event
-                        Bukkit.getPluginManager().callEvent(new StartClaimResizeEvent(player, claim, clickedBlock));
+
                     }
 
                     //if he didn't click on a corner and is in subdivision mode, he's creating a new subdivision
