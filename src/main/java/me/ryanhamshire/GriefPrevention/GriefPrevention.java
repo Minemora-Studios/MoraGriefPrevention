@@ -27,6 +27,7 @@ import me.ryanhamshire.GriefPrevention.DataStore.NoTransferException;
 import me.ryanhamshire.GriefPrevention.events.SaveTrappedPlayerEvent;
 import me.ryanhamshire.GriefPrevention.events.TrustChangedEvent;
 import net.minemora.griefprevention.MoraGp;
+import net.minemora.griefprevention.events.PreDeleteClaimEvent;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
@@ -2342,6 +2343,14 @@ public class GriefPrevention extends JavaPlugin
         }
         else
         {
+
+            PreDeleteClaimEvent preDeleteClaimEvent = new PreDeleteClaimEvent(claim);
+            Bukkit.getPluginManager().callEvent(preDeleteClaimEvent);
+
+            if(preDeleteClaimEvent.isCancelled()) {
+                return true;
+            }
+
             //delete it
             this.dataStore.deleteClaim(claim, true, false);
 

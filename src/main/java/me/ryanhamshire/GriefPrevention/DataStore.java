@@ -28,6 +28,7 @@ import me.ryanhamshire.GriefPrevention.events.ClaimModifiedEvent;
 import me.ryanhamshire.GriefPrevention.events.ClaimResizeEvent;
 import me.ryanhamshire.GriefPrevention.events.ClaimTransferEvent;
 import me.ryanhamshire.GriefPrevention.util.BoundingBox;
+import net.minemora.griefprevention.events.PreDeleteClaimEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -1117,7 +1118,16 @@ public abstract class DataStore
         for (Claim claim : this.claims)
         {
             if ((playerID == claim.ownerID || (playerID != null && playerID.equals(claim.ownerID))))
+            {
+                PreDeleteClaimEvent preDeleteClaimEvent = new PreDeleteClaimEvent(claim);
+                Bukkit.getPluginManager().callEvent(preDeleteClaimEvent);
+
+                if(preDeleteClaimEvent.isCancelled()) {
+                    continue;
+                }
+
                 claimsToDelete.add(claim);
+            }
         }
 
         //delete them one by one
