@@ -111,7 +111,7 @@ public abstract class BoundaryVisualization
                     // Only revert if this is the active visualization.
                     if (playerData.getVisibleBoundaries() == this) playerData.setVisibleBoundaries(null);
                 },
-                20L * 60);
+                20L * 45);
     }
 
     /**

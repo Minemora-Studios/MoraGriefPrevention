@@ -14,6 +14,7 @@ import me.ryanhamshire.GriefPrevention.TextMode;
 import me.ryanhamshire.GriefPrevention.events.ClaimInspectionEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -105,6 +106,18 @@ public class MoraGpPlayer {
             @Override
             public void run()
             {
+
+                Player player = Bukkit.getPlayer(uuid);
+                if (player == null || !player.isOnline()) {
+                    return;
+                }
+
+                ItemStack itemInHand = player.getInventory().getItemInMainHand();
+                if (itemInHand.getType() == GriefPrevention.instance.config_claims_modificationTool) {
+                    scheduleStopClaimEditingMode();
+                    return;
+                }
+
                 stopClaimEditingMode();
             }
         }.runTaskLater(MoraGp.getInstance().getPlugin(), 8*20);

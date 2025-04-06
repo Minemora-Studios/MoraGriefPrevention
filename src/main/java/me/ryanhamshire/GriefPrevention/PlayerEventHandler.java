@@ -1326,6 +1326,7 @@ class PlayerEventHandler implements Listener
             {
                 // MoraGriefPrevention - disable ugly task, use our own method
                 MoraGp.getInstance().playerHoldsShovel(player);
+                MoraGp.getInstance().scheduleStopClaimEditingMode(player);
 
                 //EquipShovelProcessingTask task = new EquipShovelProcessingTask(player);
                 //instance.getServer().getScheduler().scheduleSyncDelayedTask(instance, task, 15L);  //15L is approx. 3/4 of a second
@@ -1339,7 +1340,7 @@ class PlayerEventHandler implements Listener
             if (previousItemStack != null && previousItemStack.getType() == instance.config_claims_modificationTool) {
                 if (instance.claimsEnabledForWorld(player.getWorld()))
                 {
-                    MoraGp.getInstance().playerReleaseShovel(player);
+                    MoraGp.getInstance().scheduleStopClaimEditingMode(player);
                 }
             }
         }

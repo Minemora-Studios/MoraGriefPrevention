@@ -53,7 +53,7 @@ public class MoraGp implements Listener {
         getPlayer(player).startClaimEditingMode();
     }
 
-    public void playerReleaseShovel(Player player) {
+    public void scheduleStopClaimEditingMode(Player player) {
         getPlayer(player).scheduleStopClaimEditingMode();
     }
 }
