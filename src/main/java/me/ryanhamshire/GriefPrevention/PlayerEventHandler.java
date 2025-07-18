@@ -1594,7 +1594,7 @@ class PlayerEventHandler implements Listener
             if (playerData == null) playerData = this.dataStore.getPlayerData(player.getUniqueId());
 
             //block container use during pvp combat, same reason
-            if (playerData.inPvpCombat())
+            if (playerData.inPvpCombat() && clickedBlockType != Material.RESPAWN_ANCHOR) // MoraGriefPrevention - allow respawn anchor in pvp
             {
                 GriefPrevention.sendMessage(player, TextMode.Err, Messages.PvPNoContainers);
                 event.setCancelled(true);
