@@ -2124,7 +2124,7 @@ public class GriefPrevention extends JavaPlugin
         else if (cmd.getName().equalsIgnoreCase("gpreload"))
         {
             this.loadConfig();
-            this.dataStore.loadMessages();
+            //this.dataStore.loadMessages();
             playerEventHandler.reload();
             if (player != null)
             {
