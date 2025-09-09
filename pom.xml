@@ -166,15 +166,6 @@
             <version>5.4.0</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>net.minemora</groupId>
-            <artifactId>mora-basics-util</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>dev.tehin</groupId>
-            <artifactId>tlib-spigot</artifactId>
-        </dependency>
     </dependencies>
 
     <distributionManagement>
