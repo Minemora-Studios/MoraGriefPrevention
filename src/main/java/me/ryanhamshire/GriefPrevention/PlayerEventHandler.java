@@ -300,7 +300,7 @@ class PlayerEventHandler implements Listener
         //watching for message format how*claim*, and will send a link to the basics video
         if (this.howToClaimPattern == null)
         {
-            this.howToClaimPattern = Pattern.compile(this.dataStore.getMessage(Messages.HowToClaimRegex), Pattern.CASE_INSENSITIVE);
+            this.howToClaimPattern = Pattern.compile(this.dataStore.getMessage(player, Messages.HowToClaimRegex), Pattern.CASE_INSENSITIVE);
         }
 
         if (this.howToClaimPattern.matcher(message).matches())
@@ -318,7 +318,7 @@ class PlayerEventHandler implements Listener
         //FEATURE: automatically educate players about the /trapped command
         //check for "trapped" or "stuck" to educate players about the /trapped command
         String trappedwords = this.dataStore.getMessage(
-                Messages.TrappedChatKeyword
+                player, Messages.TrappedChatKeyword
         );
         if (!trappedwords.isEmpty())
         {
@@ -1107,9 +1107,9 @@ class PlayerEventHandler implements Listener
                         OfflinePlayer owner = instance.getServer().getOfflinePlayer(ownerID);
                         String ownerName = owner.getName();
                         if (ownerName == null) ownerName = "someone";
-                        String message = instance.dataStore.getMessage(Messages.NotYourPet, ownerName);
+                        String message = instance.dataStore.getMessage(player, Messages.NotYourPet, ownerName);
                         if (player.hasPermission("griefprevention.ignoreclaims"))
-                            message += "  " + instance.dataStore.getMessage(Messages.IgnoreClaimsAdvertisement);
+                            message += "  " + instance.dataStore.getMessage(player, Messages.IgnoreClaimsAdvertisement);
                         GriefPrevention.sendMessage(player, TextMode.Err, message);
                         event.setCancelled(true);
                         return;
@@ -1184,9 +1184,9 @@ class PlayerEventHandler implements Listener
             {
                 Supplier<String> override = () ->
                 {
-                    String message = instance.dataStore.getMessage(Messages.NoDamageClaimedEntity, claim.getOwnerName());
+                    String message = instance.dataStore.getMessage(player, Messages.NoDamageClaimedEntity, claim.getOwnerName());
                     if (player.hasPermission("griefprevention.ignoreclaims"))
-                        message += "  " + instance.dataStore.getMessage(Messages.IgnoreClaimsAdvertisement);
+                        message += "  " + instance.dataStore.getMessage(player, Messages.IgnoreClaimsAdvertisement);
 
                     return message;
                 };
@@ -1232,9 +1232,9 @@ class PlayerEventHandler implements Listener
 
             Supplier<String> override = () ->
             {
-                String message = dataStore.getMessage(Messages.NoDamageClaimedEntity, claim.getOwnerName());
+                String message = dataStore.getMessage(player, Messages.NoDamageClaimedEntity, claim.getOwnerName());
                 if (player.hasPermission("griefprevention.ignoreclaims"))
-                    message += "  " + dataStore.getMessage(Messages.IgnoreClaimsAdvertisement);
+                    message += "  " + dataStore.getMessage(player, Messages.IgnoreClaimsAdvertisement);
                 return message;
             };
 
@@ -1267,7 +1267,7 @@ class PlayerEventHandler implements Listener
             String reason = failureReason.get();
             if (player.hasPermission("griefprevention.ignoreclaims"))
             {
-                reason += "  " + instance.dataStore.getMessage(Messages.IgnoreClaimsAdvertisement);
+                reason += "  " + instance.dataStore.getMessage(player, Messages.IgnoreClaimsAdvertisement);
             }
 
             GriefPrevention.sendMessage(player, TextMode.Err, reason);
@@ -1981,7 +1981,7 @@ class PlayerEventHandler implements Listener
             if (claim != null)
             {
                 //if the player has permission to edit the claim or subdivision
-                Supplier<String> noEditReason = claim.checkPermission(player, ClaimPermission.Edit, event, () -> instance.dataStore.getMessage(Messages.CreateClaimFailOverlapOtherPlayer, claim.getOwnerName()));
+                Supplier<String> noEditReason = claim.checkPermission(player, ClaimPermission.Edit, event, () -> instance.dataStore.getMessage(player, Messages.CreateClaimFailOverlapOtherPlayer, claim.getOwnerName()));
                 if (noEditReason == null)
                 {
                     //if he clicked on a corner, start resizing it

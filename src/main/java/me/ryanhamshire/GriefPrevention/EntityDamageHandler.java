@@ -499,9 +499,9 @@ public class EntityDamageHandler implements Listener
             if (sendMessages)
             {
                 String ownerName = GriefPrevention.lookupPlayerName(owner);
-                String message = dataStore.getMessage(Messages.NoDamageClaimedEntity, ownerName);
+                String message = dataStore.getMessage(attacker, Messages.NoDamageClaimedEntity, ownerName);
                 if (attacker.hasPermission("griefprevention.ignoreclaims"))
-                    message += "  " + dataStore.getMessage(Messages.IgnoreClaimsAdvertisement);
+                    message += "  " + dataStore.getMessage(attacker, Messages.IgnoreClaimsAdvertisement);
                 GriefPrevention.sendMessage(attacker, TextMode.Err, message);
             }
         }
@@ -689,9 +689,9 @@ public class EntityDamageHandler implements Listener
             final Player finalAttacker = attacker;
             override = () ->
             {
-                String message = dataStore.getMessage(Messages.NoDamageClaimedEntity, claim.getOwnerName());
+                String message = dataStore.getMessage(finalAttacker, Messages.NoDamageClaimedEntity, claim.getOwnerName());
                 if (finalAttacker.hasPermission("griefprevention.ignoreclaims"))
-                    message += "  " + dataStore.getMessage(Messages.IgnoreClaimsAdvertisement);
+                    message += "  " + dataStore.getMessage(finalAttacker, Messages.IgnoreClaimsAdvertisement);
                 return message;
             };
         }
@@ -758,9 +758,9 @@ public class EntityDamageHandler implements Listener
         if (sendMessages)
         {
             String ownerName = GriefPrevention.lookupPlayerName(owner);
-            String message = dataStore.getMessage(Messages.NoDamageClaimedEntity, ownerName);
+            String message = dataStore.getMessage(attacker, Messages.NoDamageClaimedEntity, ownerName);
             if (attacker.hasPermission("griefprevention.ignoreclaims"))
-                message += "  " + dataStore.getMessage(Messages.IgnoreClaimsAdvertisement);
+                message += "  " + dataStore.getMessage(attacker, Messages.IgnoreClaimsAdvertisement);
             GriefPrevention.sendMessage(attacker, TextMode.Err, message);
         }
         return true;
@@ -895,9 +895,9 @@ public class EntityDamageHandler implements Listener
         final Player finalAttacker = attacker;
         Supplier<String> override = () ->
         {
-            String message = dataStore.getMessage(Messages.NoDamageClaimedEntity, claim.getOwnerName());
+            String message = dataStore.getMessage(finalAttacker, Messages.NoDamageClaimedEntity, claim.getOwnerName());
             if (finalAttacker.hasPermission("griefprevention.ignoreclaims"))
-                message += "  " + dataStore.getMessage(Messages.IgnoreClaimsAdvertisement);
+                message += "  " + dataStore.getMessage(finalAttacker, Messages.IgnoreClaimsAdvertisement);
             return message;
         };
         Supplier<String> noContainersReason = claim.checkPermission(attacker, ClaimPermission.Inventory, event, override);
@@ -961,7 +961,7 @@ public class EntityDamageHandler implements Listener
                             else
                             {
                                 // Source is a player. Determine if they have permission to access entities in the claim.
-                                Supplier<String> override = () -> instance.dataStore.getMessage(Messages.NoDamageClaimedEntity, claim.getOwnerName());
+                                Supplier<String> override = () -> instance.dataStore.getMessage(thrower, Messages.NoDamageClaimedEntity, claim.getOwnerName());
                                 final Supplier<String> noContainersReason = claim.checkPermission(thrower, ClaimPermission.Inventory, event, override);
                                 if (noContainersReason != null)
                                 {

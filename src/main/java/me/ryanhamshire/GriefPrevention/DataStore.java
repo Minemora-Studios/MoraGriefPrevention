@@ -156,7 +156,7 @@ public abstract class DataStore
         }
 
         //load up all the messages from messages.yml
-        this.loadMessages();
+        //this.loadMessages();
         GriefPrevention.AddLogEntry("Customizable messages loaded.");
 
         //if converting up from an earlier schema version, write all claims back to storage using the latest format
@@ -1337,68 +1337,75 @@ public abstract class DataStore
         }
     }
 
-    protected void loadMessages()
+//    protected void loadMessages()
+//    {
+//        Messages[] messageIDs = Messages.values();
+//        this.messages = new String[messageIDs.length];
+//
+//        //load the config file
+//        FileConfiguration config = YamlConfiguration.loadConfiguration(new File(messagesFilePath));
+//
+//        //for each message ID
+//        for (Messages message : messageIDs)
+//        {
+//            String messagePath = "Messages." + message.name();
+//            // If available, migrate legacy path.
+//            if (config.isString(messagePath + ".Text"))
+//            {
+//                this.messages[message.ordinal()] = config.getString(messagePath + ".Text", message.defaultValue);
+//            }
+//            // Otherwise prefer current value if available.
+//            else
+//            {
+//                this.messages[message.ordinal()] = config.getString(messagePath, message.defaultValue);
+//            }
+//            config.set(messagePath, this.messages[message.ordinal()]);
+//
+//            //support color codes
+//            if (message != Messages.HowToClaimRegex)
+//            {
+//                this.messages[message.ordinal()] = this.messages[message.ordinal()].replace('$', (char) 0x00A7);
+//            }
+//
+//            if (message.notes != null)
+//            {
+//                // Import old non-comment notes.
+//                String notesString = config.getString(messagePath + ".Notes", message.notes);
+//                // Import existing comment notes.
+//                List<String> notes = config.getComments(messagePath);
+//                if (notes.isEmpty()) {
+//                    notes = List.of(notesString);
+//                }
+//                config.setComments(messagePath, notes);
+//            }
+//        }
+//
+//        //save any changes
+//        try
+//        {
+//            config.options().setHeader(List.of(
+//                    "Use a YAML editor like NotepadPlusPlus to edit this file.",
+//                    "After editing, back up your changes before reloading the server in case you made a syntax error.",
+//                    "Use dollar signs ($) for formatting codes, which are documented here: http://minecraft.wiki/Formatting_codes#Color_codes"
+//            ));
+//            config.save(DataStore.messagesFilePath);
+//        }
+//        catch (IOException exception)
+//        {
+//            GriefPrevention.AddLogEntry("Unable to write to the configuration file at \"" + DataStore.messagesFilePath + "\"");
+//        }
+//    }
+
+    synchronized public String getMessage(Player player, Messages messageID, String... args)
     {
-        Messages[] messageIDs = Messages.values();
-        this.messages = new String[messageIDs.length];
-
-        //load the config file
-        FileConfiguration config = YamlConfiguration.loadConfiguration(new File(messagesFilePath));
-
-        //for each message ID
-        for (Messages message : messageIDs)
-        {
-            String messagePath = "Messages." + message.name();
-            // If available, migrate legacy path.
-            if (config.isString(messagePath + ".Text"))
-            {
-                this.messages[message.ordinal()] = config.getString(messagePath + ".Text", message.defaultValue);
-            }
-            // Otherwise prefer current value if available.
-            else
-            {
-                this.messages[message.ordinal()] = config.getString(messagePath, message.defaultValue);
-            }
-            config.set(messagePath, this.messages[message.ordinal()]);
-
-            //support color codes
-            if (message != Messages.HowToClaimRegex)
-            {
-                this.messages[message.ordinal()] = this.messages[message.ordinal()].replace('$', (char) 0x00A7);
-            }
-
-            if (message.notes != null)
-            {
-                // Import old non-comment notes.
-                String notesString = config.getString(messagePath + ".Notes", message.notes);
-                // Import existing comment notes.
-                List<String> notes = config.getComments(messagePath);
-                if (notes.isEmpty()) {
-                    notes = List.of(notesString);
-                }
-                config.setComments(messagePath, notes);
-            }
+        String message;
+        if(player != null) {
+            // TODO LANG
+            message = messageID.en;
         }
-
-        //save any changes
-        try
-        {
-            config.options().setHeader(List.of(
-                    "Use a YAML editor like NotepadPlusPlus to edit this file.",
-                    "After editing, back up your changes before reloading the server in case you made a syntax error.",
-                    "Use dollar signs ($) for formatting codes, which are documented here: http://minecraft.wiki/Formatting_codes#Color_codes"
-            ));
-            config.save(DataStore.messagesFilePath);
+        else {
+            message = messageID.en;
         }
-        catch (IOException exception)
-        {
-            GriefPrevention.AddLogEntry("Unable to write to the configuration file at \"" + DataStore.messagesFilePath + "\"");
-        }
-    }
-
-    synchronized public String getMessage(Messages messageID, String... args)
-    {
-        String message = messages[messageID.ordinal()];
 
         for (int i = 0; i < args.length; i++)
         {

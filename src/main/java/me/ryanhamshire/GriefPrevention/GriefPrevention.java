@@ -1304,10 +1304,10 @@ public class GriefPrevention extends JavaPlugin
             player.sendMessage(permissions.toString());
 
             player.sendMessage(
-                    ChatColor.GOLD + this.dataStore.getMessage(Messages.Manage) + " " +
-                            ChatColor.YELLOW + this.dataStore.getMessage(Messages.Build) + " " +
-                            ChatColor.GREEN + this.dataStore.getMessage(Messages.Containers) + " " +
-                            ChatColor.BLUE + this.dataStore.getMessage(Messages.Access));
+                    ChatColor.GOLD + this.dataStore.getMessage(player, Messages.Manage) + " " +
+                            ChatColor.YELLOW + this.dataStore.getMessage(player, Messages.Build) + " " +
+                            ChatColor.GREEN + this.dataStore.getMessage(player, Messages.Containers) + " " +
+                            ChatColor.BLUE + this.dataStore.getMessage(player, Messages.Access));
 
             if (claim.getSubclaimRestrictions())
             {
@@ -1827,7 +1827,7 @@ public class GriefPrevention extends JavaPlugin
                 for (int i = 0; i < playerData.getClaims().size(); i++)
                 {
                     Claim claim = playerData.getClaims().get(i);
-                    GriefPrevention.sendMessage(player, TextMode.Instr, getfriendlyLocationString(claim.getLesserBoundaryCorner()) + this.dataStore.getMessage(Messages.ContinueBlockMath, String.valueOf(claim.getArea())));
+                    GriefPrevention.sendMessage(player, TextMode.Instr, getfriendlyLocationString(claim.getLesserBoundaryCorner()) + this.dataStore.getMessage(player, Messages.ContinueBlockMath, String.valueOf(claim.getArea())));
                 }
 
                 GriefPrevention.sendMessage(player, TextMode.Instr, Messages.EndBlockMath, String.valueOf(playerData.getRemainingClaimBlocks()));
@@ -2510,33 +2510,33 @@ public class GriefPrevention extends JavaPlugin
         }
 
         //notify player
-        if (recipientName.equals("public")) recipientName = this.dataStore.getMessage(Messages.CollectivePublic);
+        if (recipientName.equals("public")) recipientName = this.dataStore.getMessage(player, Messages.CollectivePublic);
         String permissionDescription;
         if (permissionLevel == null)
         {
-            permissionDescription = this.dataStore.getMessage(Messages.PermissionsPermission);
+            permissionDescription = this.dataStore.getMessage(player, Messages.PermissionsPermission);
         }
         else if (permissionLevel == ClaimPermission.Build)
         {
-            permissionDescription = this.dataStore.getMessage(Messages.BuildPermission);
+            permissionDescription = this.dataStore.getMessage(player, Messages.BuildPermission);
         }
         else if (permissionLevel == ClaimPermission.Access)
         {
-            permissionDescription = this.dataStore.getMessage(Messages.AccessPermission);
+            permissionDescription = this.dataStore.getMessage(player, Messages.AccessPermission);
         }
         else //ClaimPermission.Inventory
         {
-            permissionDescription = this.dataStore.getMessage(Messages.ContainersPermission);
+            permissionDescription = this.dataStore.getMessage(player, Messages.ContainersPermission);
         }
 
         String location;
         if (claim == null)
         {
-            location = this.dataStore.getMessage(Messages.LocationAllClaims);
+            location = this.dataStore.getMessage(player, Messages.LocationAllClaims);
         }
         else
         {
-            location = this.dataStore.getMessage(Messages.LocationCurrentClaim);
+            location = this.dataStore.getMessage(player, Messages.LocationCurrentClaim);
         }
 
         GriefPrevention.sendMessage(player, TextMode.Success, Messages.GrantPermissionConfirmation, recipientName, permissionDescription, location);
@@ -2683,7 +2683,7 @@ public class GriefPrevention extends JavaPlugin
 
     private static String getDefaultName(@Nullable UUID playerId)
     {
-        String someone = instance.dataStore.getMessage(Messages.UnknownPlayerName);
+        String someone = instance.dataStore.getMessage(null, Messages.UnknownPlayerName);
 
         if (someone == null || someone.isBlank())
         {
@@ -2839,7 +2839,7 @@ public class GriefPrevention extends JavaPlugin
     //sends a color-coded message to a player
     public static void sendMessage(@Nullable Player player, @NotNull ChatColor color, @NotNull Messages messageID, long delayInTicks, @NotNull String @NotNull ... args)
     {
-        String message = GriefPrevention.instance.dataStore.getMessage(messageID, args);
+        String message = GriefPrevention.instance.dataStore.getMessage(player, messageID, args);
         sendMessage(player, color, message, delayInTicks);
     }
 

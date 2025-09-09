@@ -33,25 +33,25 @@ public class WelcomeTask implements Runnable
             BookMeta meta = (BookMeta) factory.getItemMeta(Material.WRITTEN_BOOK);
 
             DataStore datastore = GriefPrevention.instance.dataStore;
-            meta.setAuthor(datastore.getMessage(Messages.BookAuthor));
-            meta.setTitle(datastore.getMessage(Messages.BookTitle));
+            meta.setAuthor(datastore.getMessage(player, Messages.BookAuthor));
+            meta.setTitle(datastore.getMessage(player, Messages.BookTitle));
 
             StringBuilder page1 = new StringBuilder();
-            String URL = datastore.getMessage(Messages.BookLink, DataStore.SURVIVAL_VIDEO_URL);
-            String intro = datastore.getMessage(Messages.BookIntro);
+            String URL = datastore.getMessage(player, Messages.BookLink, DataStore.SURVIVAL_VIDEO_URL);
+            String intro = datastore.getMessage(player, Messages.BookIntro);
 
             page1.append(URL).append("\n\n");
             page1.append(intro).append("\n\n");
             String editToolName = GriefPrevention.instance.config_claims_modificationTool.name().replace('_', ' ').toLowerCase();
             String infoToolName = GriefPrevention.instance.config_claims_investigationTool.name().replace('_', ' ').toLowerCase();
-            String configClaimTools = datastore.getMessage(Messages.BookTools, editToolName, infoToolName);
+            String configClaimTools = datastore.getMessage(player, Messages.BookTools, editToolName, infoToolName);
             page1.append(configClaimTools);
             if (GriefPrevention.instance.config_claims_automaticClaimsForNewPlayersRadius < 0)
             {
-                page1.append(datastore.getMessage(Messages.BookDisabledChestClaims));
+                page1.append(datastore.getMessage(player, Messages.BookDisabledChestClaims));
             }
 
-            StringBuilder page2 = new StringBuilder(datastore.getMessage(Messages.BookUsefulCommands)).append("\n\n");
+            StringBuilder page2 = new StringBuilder(datastore.getMessage(player, Messages.BookUsefulCommands)).append("\n\n");
             page2.append("/Trust /UnTrust /TrustList\n");
             page2.append("/ClaimsList\n");
             page2.append("/AbandonClaim\n\n");

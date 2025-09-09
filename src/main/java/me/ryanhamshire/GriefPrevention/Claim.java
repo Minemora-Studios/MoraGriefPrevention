@@ -488,7 +488,7 @@ public class Claim
             PlayerData playerData = GriefPrevention.instance.dataStore.getPlayerData(uuid);
             if (playerData.inPvpCombat())
             {
-                return () -> GriefPrevention.instance.dataStore.getMessage(Messages.NoBuildPvP);
+                return () -> GriefPrevention.instance.dataStore.getMessage(player, Messages.NoBuildPvP);
             }
 
             // Allow farming crops with container trust.
@@ -511,9 +511,9 @@ public class Claim
         // Catch-all error message for all other cases.
         return () ->
         {
-            String reason = GriefPrevention.instance.dataStore.getMessage(permission.getDenialMessage(), this.getOwnerName());
+            String reason = GriefPrevention.instance.dataStore.getMessage(player, permission.getDenialMessage(), this.getOwnerName());
             if (hasBypassPermission(player, permission))
-                reason += "  " + GriefPrevention.instance.dataStore.getMessage(Messages.IgnoreClaimsAdvertisement);
+                reason += "  " + GriefPrevention.instance.dataStore.getMessage(player, Messages.IgnoreClaimsAdvertisement);
             return reason;
         };
     }
@@ -678,7 +678,7 @@ public class Claim
             return this.parent.getOwnerName();
 
         if (this.ownerID == null)
-            return GriefPrevention.instance.dataStore.getMessage(Messages.OwnerNameForAdminClaims);
+            return GriefPrevention.instance.dataStore.getMessage(null, Messages.OwnerNameForAdminClaims);
 
         return GriefPrevention.lookupPlayerName(this.ownerID);
     }

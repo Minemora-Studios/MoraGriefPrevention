@@ -73,10 +73,10 @@ public final class ProtectionHelper
                 // If claims are required, provide relevant information.
                 return () ->
                 {
-                    String reason = GriefPrevention.instance.dataStore.getMessage(Messages.NoBuildOutsideClaims);
+                    String reason = GriefPrevention.instance.dataStore.getMessage(player, Messages.NoBuildOutsideClaims);
                     if (player.hasPermission("griefprevention.ignoreclaims"))
-                        reason += "  " + GriefPrevention.instance.dataStore.getMessage(Messages.IgnoreClaimsAdvertisement);
-                    reason += "  " + GriefPrevention.instance.dataStore.getMessage(Messages.CreativeBasicsVideo2, DataStore.CREATIVE_VIDEO_URL);
+                        reason += "  " + GriefPrevention.instance.dataStore.getMessage(player, Messages.IgnoreClaimsAdvertisement);
+                    reason += "  " + GriefPrevention.instance.dataStore.getMessage(player, Messages.CreativeBasicsVideo2, DataStore.CREATIVE_VIDEO_URL);
                     return reason;
                 };
             }
