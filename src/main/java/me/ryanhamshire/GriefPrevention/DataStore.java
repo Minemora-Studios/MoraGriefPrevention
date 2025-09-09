@@ -29,6 +29,8 @@ import me.ryanhamshire.GriefPrevention.events.ClaimResizeEvent;
 import me.ryanhamshire.GriefPrevention.events.ClaimTransferEvent;
 import me.ryanhamshire.GriefPrevention.util.BoundingBox;
 import net.minemora.griefprevention.events.PreDeleteClaimEvent;
+import net.minemora.util.lang.LangManager;
+import net.minemora.util.lang.LangType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -1400,8 +1402,12 @@ public abstract class DataStore
     {
         String message;
         if(player != null) {
-            // TODO LANG
-            message = messageID.en;
+            LangType lang = LangManager.getInstance().getLangOf(player);
+            if (lang == LangType.EN) {
+                message = messageID.en;
+            } else {
+                message = messageID.es;
+            }
         }
         else {
             message = messageID.en;
