@@ -756,7 +756,7 @@ class PlayerEventHandler implements Listener
                 if (ipCount >= ipLimit)
                 {
                     //kick player
-                    PlayerKickBanTask task = new PlayerKickBanTask(player, instance.dataStore.getMessage(Messages.TooMuchIpOverlap), "GriefPrevention IP-sharing limit.", false);
+                    PlayerKickBanTask task = new PlayerKickBanTask(player, instance.dataStore.getMessage(player, Messages.TooMuchIpOverlap), "GriefPrevention IP-sharing limit.", false);
                     instance.getServer().getScheduler().scheduleSyncDelayedTask(instance, task, 100L);
 
                     //silence join message
