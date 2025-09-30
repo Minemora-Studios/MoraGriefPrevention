@@ -175,7 +175,7 @@
         <dependency>
             <groupId>dev.tehin</groupId>
             <artifactId>tlib-spigot</artifactId>
-            <version>4.5.9</version>
+            <version>5.0.4</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
