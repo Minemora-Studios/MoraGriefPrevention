@@ -19,9 +19,11 @@
 package me.ryanhamshire.GriefPrevention;
 
 import me.ryanhamshire.GriefPrevention.events.ClaimExpirationEvent;
+import net.minemora.griefprevention.events.ClaimsInactivityExpireEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
@@ -82,6 +84,14 @@ class CleanupUnusedClaimTask implements Runnable
 
                 //delete them
                 GriefPrevention.instance.dataStore.deleteClaimsForPlayer(claim.ownerID, true);
+
+                //fire event after all claims have been deleted due to expiration
+                if (!claims.isEmpty())
+                {
+                    ClaimsInactivityExpireEvent event = new ClaimsInactivityExpireEvent(claim.ownerID, new ArrayList<>(claims));
+                    Bukkit.getPluginManager().callEvent(event);
+                }
+
                 GriefPrevention.AddLogEntry(" All of " + claim.getOwnerName() + "'s claims have expired.", CustomLogEntryTypes.AdminActivity);
                 GriefPrevention.AddLogEntry("earliestPermissibleLastLogin#getTime: " + earliestPermissibleLastLogin.getTime(), CustomLogEntryTypes.Debug, true);
                 GriefPrevention.AddLogEntry("ownerInfo#getLastPlayed: " + ownerInfo.getLastPlayed(), CustomLogEntryTypes.Debug, true);
