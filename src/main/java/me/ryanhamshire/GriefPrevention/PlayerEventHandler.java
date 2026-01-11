@@ -1143,16 +1143,18 @@ class PlayerEventHandler implements Listener
         //always allow interactions when player is in ignore claims mode
         if (playerData.ignoreClaims) return;
 
+        // MoraGriefPrevention start - allow container access (PvP)
         //don't allow container access during pvp combat
-        if ((entity instanceof StorageMinecart || entity instanceof PoweredMinecart))
-        {
-            if (playerData.inPvpCombat())
-            {
-                GriefPrevention.sendMessage(player, TextMode.Err, Messages.PvPNoContainers);
-                event.setCancelled(true);
-                return;
-            }
-        }
+//        if ((entity instanceof StorageMinecart || entity instanceof PoweredMinecart))
+//        {
+//            if (playerData.inPvpCombat())
+//            {
+//                GriefPrevention.sendMessage(player, TextMode.Err, Messages.PvPNoContainers);
+//                event.setCancelled(true);
+//                return;
+//            }
+//        }
+        // MoraGriefPrevention end - allow container access (PvP)
 
         //if the entity is a vehicle and we're preventing theft in claims
         if (instance.config_claims_preventTheft && entity instanceof Vehicle)
@@ -1593,13 +1595,15 @@ class PlayerEventHandler implements Listener
         {
             if (playerData == null) playerData = this.dataStore.getPlayerData(player.getUniqueId());
 
-            //block container use during pvp combat, same reason
-            if (playerData.inPvpCombat() && clickedBlockType != Material.RESPAWN_ANCHOR) // MoraGriefPrevention - allow respawn anchor in pvp
-            {
-                GriefPrevention.sendMessage(player, TextMode.Err, Messages.PvPNoContainers);
-                event.setCancelled(true);
-                return;
-            }
+            // MoraGriefPrevention start - allow container access (PvP)
+//            //block container use during pvp combat, same reason
+//            if (playerData.inPvpCombat() && clickedBlockType != Material.RESPAWN_ANCHOR) // MoraGriefPrevention - allow respawn anchor in pvp
+//            {
+//                GriefPrevention.sendMessage(player, TextMode.Err, Messages.PvPNoContainers);
+//                event.setCancelled(true);
+//                return;
+//            }
+            // MoraGriefPrevention end - allow container access (PvP)
 
             //otherwise check permissions for the claim the player is in
             Claim claim = this.dataStore.getClaimAt(clickedBlock.getLocation(), false, playerData.lastClaim);
