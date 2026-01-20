@@ -863,11 +863,7 @@ public abstract class DataStore
         CreateClaimResult result = new CreateClaimResult();
 
         int smallx, bigx, smally, bigy, smallz, bigz;
-
-        int worldMinY = world.getMinHeight();
-        y1 = Math.max(worldMinY, Math.max(GriefPrevention.instance.getMinY(world), y1));
-        y2 = Math.max(worldMinY, Math.max(GriefPrevention.instance.getMinY(world), y2));
-
+        // MoraGriefPrevention start - Always protect from world min to max height
         //determine small versus big inputs
         if (x1 < x2)
         {
@@ -880,16 +876,9 @@ public abstract class DataStore
             bigx = x1;
         }
 
-        if (y1 < y2)
-        {
-            smally = y1;
-            bigy = y2;
-        }
-        else
-        {
-            smally = y2;
-            bigy = y1;
-        }
+        // Always protect from world min to max height
+        smally = world.getMinHeight();
+        bigy = world.getMaxHeight();
 
         if (z1 < z2)
         {
@@ -901,6 +890,7 @@ public abstract class DataStore
             smallz = z2;
             bigz = z1;
         }
+        // MoraGriefPrevention end - Always protect from world min to max height
 
         if (parent != null)
         {
@@ -1087,7 +1077,6 @@ public abstract class DataStore
         // Cap the depth to the world's minimum height.
         World world = Objects.requireNonNull(claim.getLesserBoundaryCorner().getWorld());
         // Cap depth to maximum depth allowed by the configuration.
-        newDepth = Math.max(newDepth, GriefPrevention.instance.getMinY(world));
         newDepth = Math.max(newDepth, world.getMinHeight());
 
         return newDepth;

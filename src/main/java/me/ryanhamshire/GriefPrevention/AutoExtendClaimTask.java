@@ -99,7 +99,9 @@ public class AutoExtendClaimTask implements Runnable
         this.worldType = worldType;
         this.lowestExistingY = Math.min(lowestExistingY, claim.getLesserBoundaryCorner().getBlockY());
         World world = Objects.requireNonNull(claim.getLesserBoundaryCorner().getWorld());
-        this.minY = Math.max(world.getMinHeight(), GriefPrevention.instance.getMinY(world));
+        // MoraGriefPrevention start - Always protect from world min to max height
+        this.minY = world.getMinHeight();
+        // MoraGriefPrevention end - Always protect from world min to max height
     }
 
     @Override
