@@ -2175,85 +2175,85 @@ public class GriefPrevention extends JavaPlugin
         }
 
         //ignoreplayer
-        else if (cmd.getName().equalsIgnoreCase("ignoreplayer") && player != null)
-        {
-            //requires target player name
-            if (args.length < 1) return false;
-
-            //validate target player
-            OfflinePlayer targetPlayer = this.resolvePlayerByName(args[0]);
-            if (targetPlayer == null)
-            {
-                GriefPrevention.sendMessage(player, TextMode.Err, Messages.PlayerNotFound2);
-                return true;
-            }
-
-            this.setIgnoreStatus(player, targetPlayer, IgnoreMode.StandardIgnore);
-
-            GriefPrevention.sendMessage(player, TextMode.Success, Messages.IgnoreConfirmation);
-
-            return true;
-        }
+//        else if (cmd.getName().equalsIgnoreCase("ignoreplayer") && player != null)
+//        {
+//            //requires target player name
+//            if (args.length < 1) return false;
+//
+//            //validate target player
+//            OfflinePlayer targetPlayer = this.resolvePlayerByName(args[0]);
+//            if (targetPlayer == null)
+//            {
+//                GriefPrevention.sendMessage(player, TextMode.Err, Messages.PlayerNotFound2);
+//                return true;
+//            }
+//
+//            this.setIgnoreStatus(player, targetPlayer, IgnoreMode.StandardIgnore);
+//
+//            GriefPrevention.sendMessage(player, TextMode.Success, Messages.IgnoreConfirmation);
+//
+//            return true;
+//        }
 
         //unignoreplayer
-        else if (cmd.getName().equalsIgnoreCase("unignoreplayer") && player != null)
-        {
-            //requires target player name
-            if (args.length < 1) return false;
-
-            //validate target player
-            OfflinePlayer targetPlayer = this.resolvePlayerByName(args[0]);
-            if (targetPlayer == null)
-            {
-                GriefPrevention.sendMessage(player, TextMode.Err, Messages.PlayerNotFound2);
-                return true;
-            }
-
-            PlayerData playerData = this.dataStore.getPlayerData(player.getUniqueId());
-            Boolean ignoreStatus = playerData.ignoredPlayers.get(targetPlayer.getUniqueId());
-            if (ignoreStatus == null || ignoreStatus == true)
-            {
-                GriefPrevention.sendMessage(player, TextMode.Err, Messages.NotIgnoringPlayer);
-                return true;
-            }
-
-            this.setIgnoreStatus(player, targetPlayer, IgnoreMode.None);
-
-            GriefPrevention.sendMessage(player, TextMode.Success, Messages.UnIgnoreConfirmation);
-
-            return true;
-        }
+//        else if (cmd.getName().equalsIgnoreCase("unignoreplayer") && player != null)
+//        {
+//            //requires target player name
+//            if (args.length < 1) return false;
+//
+//            //validate target player
+//            OfflinePlayer targetPlayer = this.resolvePlayerByName(args[0]);
+//            if (targetPlayer == null)
+//            {
+//                GriefPrevention.sendMessage(player, TextMode.Err, Messages.PlayerNotFound2);
+//                return true;
+//            }
+//
+//            PlayerData playerData = this.dataStore.getPlayerData(player.getUniqueId());
+//            Boolean ignoreStatus = playerData.ignoredPlayers.get(targetPlayer.getUniqueId());
+//            if (ignoreStatus == null || ignoreStatus == true)
+//            {
+//                GriefPrevention.sendMessage(player, TextMode.Err, Messages.NotIgnoringPlayer);
+//                return true;
+//            }
+//
+//            this.setIgnoreStatus(player, targetPlayer, IgnoreMode.None);
+//
+//            GriefPrevention.sendMessage(player, TextMode.Success, Messages.UnIgnoreConfirmation);
+//
+//            return true;
+//        }
 
         //ignoredplayerlist
-        else if (cmd.getName().equalsIgnoreCase("ignoredplayerlist") && player != null)
-        {
-            PlayerData playerData = this.dataStore.getPlayerData(player.getUniqueId());
-            StringBuilder builder = new StringBuilder();
-            for (Entry<UUID, Boolean> entry : playerData.ignoredPlayers.entrySet())
-            {
-                if (entry.getValue() != null)
-                {
-                    //if not an admin ignore, add it to the list
-                    if (!entry.getValue())
-                    {
-                        builder.append(GriefPrevention.lookupPlayerName(entry.getKey()));
-                        builder.append(" ");
-                    }
-                }
-            }
-
-            String list = builder.toString().trim();
-            if (list.isEmpty())
-            {
-                GriefPrevention.sendMessage(player, TextMode.Info, Messages.NotIgnoringAnyone);
-            }
-            else
-            {
-                GriefPrevention.sendMessage(player, TextMode.Info, list);
-            }
-
-            return true;
-        }
+//        else if (cmd.getName().equalsIgnoreCase("ignoredplayerlist") && player != null)
+//        {
+//            PlayerData playerData = this.dataStore.getPlayerData(player.getUniqueId());
+//            StringBuilder builder = new StringBuilder();
+//            for (Entry<UUID, Boolean> entry : playerData.ignoredPlayers.entrySet())
+//            {
+//                if (entry.getValue() != null)
+//                {
+//                    //if not an admin ignore, add it to the list
+//                    if (!entry.getValue())
+//                    {
+//                        builder.append(GriefPrevention.lookupPlayerName(entry.getKey()));
+//                        builder.append(" ");
+//                    }
+//                }
+//            }
+//
+//            String list = builder.toString().trim();
+//            if (list.isEmpty())
+//            {
+//                GriefPrevention.sendMessage(player, TextMode.Info, Messages.NotIgnoringAnyone);
+//            }
+//            else
+//            {
+//                GriefPrevention.sendMessage(player, TextMode.Info, list);
+//            }
+//
+//            return true;
+//        }
 
         //separateplayers
         else if (cmd.getName().equalsIgnoreCase("separate"))

@@ -154,21 +154,21 @@ commands:
       description: Reloads Grief Prevention's configuration settings.  Does NOT totally reload the entire plugin.
       usage: /<command>
       permission: griefprevention.reload
-    ignoreplayer:
-      description: Ignores another player's chat messages.
-      usage: /<command> <player name>
-      aliases: [ignore]
-      permission: griefprevention.ignore
-    unignoreplayer:
-      description: Unignores another player's chat messages.
-      usage: /<command> <player name>
-      aliases: [unignore]
-      permission: griefprevention.ignore
-    ignoredplayerlist:
-      description: Lists the players you're ignoring in chat.
-      usage: /<command>
-      aliases: [ignores, ignored, ignorelist, ignoredlist, listignores, listignored, ignoring]
-      permission: griefprevention.ignore
+#    ignoreplayer:
+#      description: Ignores another player's chat messages.
+#      usage: /<command> <player name>
+#      aliases: [ignore]
+#      permission: griefprevention.ignore
+#    unignoreplayer:
+#      description: Unignores another player's chat messages.
+#      usage: /<command> <player name>
+#      aliases: [unignore]
+#      permission: griefprevention.ignore
+#    ignoredplayerlist:
+#      description: Lists the players you're ignoring in chat.
+#      usage: /<command>
+#      aliases: [ignores, ignored, ignorelist, ignoredlist, listignores, listignored, ignoring]
+#      permission: griefprevention.ignore
     separate:
       description: Forces two players to ignore each other in chat.
       usage: /<command> <player1> <player2>
