@@ -291,15 +291,6 @@ public class GriefPrevention extends JavaPlugin
             {
                 DatabaseDataStore databaseStore = new DatabaseDataStore(this.databaseUrl, this.databaseUserName, this.databasePassword);
 
-                if (FlatFileDataStore.hasData())
-                {
-                    GriefPrevention.AddLogEntry("There appears to be some data on the hard drive.  Migrating those data to the database...");
-                    FlatFileDataStore flatFileStore = new FlatFileDataStore();
-                    this.dataStore = flatFileStore;
-                    flatFileStore.migrateData(databaseStore);
-                    GriefPrevention.AddLogEntry("Data migration process complete.");
-                }
-
                 this.dataStore = databaseStore;
             }
             catch (Exception e)
@@ -1261,7 +1252,7 @@ public class GriefPrevention extends JavaPlugin
             //change ownerhsip
             try
             {
-                this.dataStore.changeClaimOwner(claim, newOwnerID);
+                if (!this.dataStore.changeClaimOwner(claim, newOwnerID)) return true;
             }
             catch (NoTransferException e)
             {
@@ -1361,7 +1352,7 @@ public class GriefPrevention extends JavaPlugin
             return true;
         }
 
-        //untrust <player> or untrust [<group>]
+        //untrust <player>
         else if (cmd.getName().equalsIgnoreCase("untrust") && player != null)
         {
             //requires exactly one parameter, the other player's name
@@ -1387,28 +1378,18 @@ public class GriefPrevention extends JavaPlugin
             }
             else
             {
-                //validate player argument or group argument
-                if (!args[0].startsWith("[") || !args[0].endsWith("]"))
+                //validate player argument
+                otherPlayer = this.resolvePlayerByName(args[0]);
+                if (!clearPermissions && otherPlayer == null && !args[0].equals("public"))
                 {
-                    otherPlayer = this.resolvePlayerByName(args[0]);
-                    if (!clearPermissions && otherPlayer == null && !args[0].equals("public"))
-                    {
-                        //bracket any permissions - at this point it must be a permission without brackets
-                        if (args[0].contains("."))
-                        {
-                            args[0] = "[" + args[0] + "]";
-                        }
-                        else
-                        {
-                            GriefPrevention.sendMessage(player, TextMode.Err, Messages.PlayerNotFound2);
-                            return true;
-                        }
-                    }
-
-                    //correct to proper casing
-                    if (otherPlayer != null)
-                        args[0] = otherPlayer.getName();
+                    GriefPrevention.sendMessage(player, TextMode.Err, Messages.PlayerNotFound2);
+                    return true;
                 }
+
+                //correct to proper casing
+                if (otherPlayer != null)
+                    args[0] = otherPlayer.getName();
+
             }
 
             //if no claim here, apply changes to all his claims
@@ -1862,8 +1843,8 @@ public class GriefPrevention extends JavaPlugin
             Vector<Claim> claims = playerData.getClaims();
             GriefPrevention.sendMessage(player, TextMode.Instr, Messages.StartBlockMath,
                     String.valueOf(playerData.getAccruedClaimBlocks()),
-                    String.valueOf((playerData.getBonusClaimBlocks() + this.dataStore.getGroupBonusBlocks(otherPlayer.getUniqueId()))),
-                    String.valueOf((playerData.getAccruedClaimBlocks() + playerData.getBonusClaimBlocks() + this.dataStore.getGroupBonusBlocks(otherPlayer.getUniqueId()))));
+                    String.valueOf((playerData.getBonusClaimBlocks())),
+                    String.valueOf((playerData.getAccruedClaimBlocks() + playerData.getBonusClaimBlocks())));
             if (!claims.isEmpty())
             {
                 GriefPrevention.sendMessage(player, TextMode.Instr, Messages.ClaimsListHeader);
@@ -1952,10 +1933,10 @@ public class GriefPrevention extends JavaPlugin
             return true;
         }
 
-        //adjustbonusclaimblocks <player> <amount> or [<permission>] amount
+        //adjustbonusclaimblocks <player> <amount>
         else if (cmd.getName().equalsIgnoreCase("adjustbonusclaimblocks"))
         {
-            //requires exactly two parameters, the other player or group's name and the adjustment
+            //requires exactly two parameters, the other player's name and the adjustment
             if (args.length != 2) return false;
 
             //parse the adjustment amount
@@ -1967,19 +1948,6 @@ public class GriefPrevention extends JavaPlugin
             catch (NumberFormatException numberFormatException)
             {
                 return false;  //causes usage to be displayed
-            }
-
-            //if granting blocks to all players with a specific permission
-            if (args[0].startsWith("[") && args[0].endsWith("]"))
-            {
-                String permissionIdentifier = args[0].substring(1, args[0].length() - 1);
-                int newTotal = this.dataStore.adjustGroupBonusBlocks(permissionIdentifier, adjustment);
-
-                GriefPrevention.sendMessage(player, TextMode.Success, Messages.AdjustGroupBlocksSuccess, permissionIdentifier, String.valueOf(adjustment), String.valueOf(newTotal));
-                if (player != null)
-                    GriefPrevention.AddLogEntry(player.getName() + " adjusted " + permissionIdentifier + "'s bonus claim blocks by " + adjustment + ".");
-
-                return true;
             }
 
             //otherwise, find the specified player
@@ -2339,7 +2307,7 @@ public class GriefPrevention extends JavaPlugin
 
     private String trustEntryToPlayerName(String entry)
     {
-        if (entry.startsWith("[") || entry.equals("public"))
+        if (entry.equals("public"))
         {
             return entry;
         }
@@ -2416,43 +2384,24 @@ public class GriefPrevention extends JavaPlugin
         //determine which claim the player is standing in
         Claim claim = this.dataStore.getClaimAt(player.getLocation(), true /*ignore height*/, null);
 
-        //validate player or group argument
-        String permission = null;
+        //validate player
         OfflinePlayer otherPlayer = null;
         UUID recipientID = null;
-        if (recipientName.startsWith("[") && recipientName.endsWith("]"))
+        otherPlayer = this.resolvePlayerByName(recipientName);
+        
+        if (otherPlayer == null && !recipientName.equals("public") && !recipientName.equals("all"))
         {
-            permission = recipientName.substring(1, recipientName.length() - 1);
-            if (permission == null || permission.isEmpty())
-            {
-                GriefPrevention.sendMessage(player, TextMode.Err, Messages.InvalidPermissionID);
-                return;
-            }
+            GriefPrevention.sendMessage(player, TextMode.Err, Messages.PlayerNotFound2);
+            return;
+        }
+        else if (otherPlayer != null)
+        {
+            recipientName = otherPlayer.getName();
+            recipientID = otherPlayer.getUniqueId();
         }
         else
         {
-            otherPlayer = this.resolvePlayerByName(recipientName);
-            boolean isPermissionFormat = recipientName.contains(".");
-            if (otherPlayer == null && !recipientName.equals("public") && !recipientName.equals("all") && !isPermissionFormat)
-            {
-                GriefPrevention.sendMessage(player, TextMode.Err, Messages.PlayerNotFound2);
-                return;
-            }
-
-            if (otherPlayer == null && isPermissionFormat)
-            {
-                //player does not exist and argument has a period so this is a permission instead
-                permission = recipientName;
-            }
-            else if (otherPlayer != null)
-            {
-                recipientName = otherPlayer.getName();
-                recipientID = otherPlayer.getUniqueId();
-            }
-            else
-            {
-                recipientName = "public";
-            }
+            recipientName = "public";
         }
 
         //determine which claims should be modified
@@ -2482,13 +2431,7 @@ public class GriefPrevention extends JavaPlugin
         }
 
         String identifierToAdd = recipientName;
-        if (permission != null)
-        {
-            identifierToAdd = "[" + permission + "]";
-            //replace recipientName as well so the success message clearly signals a permission
-            recipientName = identifierToAdd;
-        }
-        else if (recipientID != null)
+        if (recipientID != null)
         {
             identifierToAdd = recipientID.toString();
         }

@@ -68,9 +68,6 @@ public abstract class DataStore
     //in-memory cache for player data
     protected ConcurrentHashMap<UUID, PlayerData> playerNameToPlayerDataMap = new ConcurrentHashMap<>();
 
-    //in-memory cache for group (permission-based) data
-    protected ConcurrentHashMap<String, Integer> permissionToBonusBlocksMap = new ConcurrentHashMap<>();
-
     //in-memory cache for claim data
     ArrayList<Claim> claims = new ArrayList<>();
     // claim id to claim cache
@@ -334,45 +331,6 @@ public abstract class DataStore
         this.playerNameToPlayerDataMap.remove(playerID);
     }
 
-    //gets the number of bonus blocks a player has from his permissions
-    //Bukkit doesn't allow for checking permissions of an offline player.
-    //this will return 0 when he's offline, and the correct number when online.
-    synchronized public int getGroupBonusBlocks(UUID playerID)
-    {
-        Player player = GriefPrevention.instance.getServer().getPlayer(playerID);
-
-        if (player == null) return 0;
-
-        int bonusBlocks = 0;
-
-        for (Map.Entry<String, Integer> groupEntry : this.permissionToBonusBlocksMap.entrySet())
-        {
-            if (player.hasPermission(groupEntry.getKey()))
-            {
-                bonusBlocks += groupEntry.getValue();
-            }
-        }
-
-        return bonusBlocks;
-    }
-
-    //grants a group (players with a specific permission) bonus claim blocks as long as they're still members of the group
-    synchronized public int adjustGroupBonusBlocks(String groupName, int amount)
-    {
-        Integer currentValue = this.permissionToBonusBlocksMap.get(groupName);
-        if (currentValue == null) currentValue = 0;
-
-        currentValue += amount;
-        this.permissionToBonusBlocksMap.put(groupName, currentValue);
-
-        //write changes to storage to ensure they don't get lost
-        this.saveGroupBonusBlocks(groupName, currentValue);
-
-        return currentValue;
-    }
-
-    abstract void saveGroupBonusBlocks(String groupName, int amount);
-
     public class NoTransferException extends RuntimeException
     {
         private static final long serialVersionUID = 1L;
@@ -383,7 +341,7 @@ public abstract class DataStore
         }
     }
 
-    synchronized public void changeClaimOwner(Claim claim, UUID newOwnerID)
+    synchronized public boolean changeClaimOwner(Claim claim, UUID newOwnerID)
     {
         //if it's a subdivision, throw an exception
         if (claim.parent != null)
@@ -405,7 +363,7 @@ public abstract class DataStore
         Bukkit.getPluginManager().callEvent(event);
 
         //return if event is cancelled
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) return false;
 
         //determine new owner
         PlayerData newOwnerData = null;
@@ -429,6 +387,8 @@ public abstract class DataStore
         {
             newOwnerData.getClaims().add(claim);
         }
+
+        return true;
     }
 
     //adds a claim to the datastore, making it an effective claim
@@ -1411,8 +1371,8 @@ public abstract class DataStore
 
         for (String name : names)
         {
-            //skip non-player-names (groups and "public"), leave them as-is
-            if (name.startsWith("[") || name.equals("public"))
+            //skip "public", leave them as-is
+            if (name.equals("public"))
             {
                 resultNames.add(name);
                 continue;
